@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,14 +45,22 @@ public class PostService {
         postRepository.deleteById(id);
     }
 
-    public List<PostResponse> getPostByCategory(String category ) {
-        List<Post> posts = postRepository.findByCategoryIgnoreCase(category);
-        if (posts == null) {
-            throw new EntityNotFoundException("No post found for category");
+    public List<PostResponse> getPostsByCategory(String category) {
+        List<Post> posts = postRepository.findAll().stream()
+                .filter(post -> post.getCategories().contains(category))
+                .collect(Collectors.toList());
+
+        if (posts.isEmpty()) {
+            throw new EntityNotFoundException("No posts found for category: " + category);
         }
-        List<PostResponse> responses = posts.stream()
+
+        return posts.stream()
                 .map(post -> modelMapper.map(post, PostResponse.class))
                 .collect(Collectors.toList());
-        return  responses;
     }
+
+
+
+
+
 }

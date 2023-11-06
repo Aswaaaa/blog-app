@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Getter
@@ -19,7 +20,7 @@ public class PostResponse {
     private long id;
     private String title;
     private String content;
-    private String category;
+    private List<String> categories;
     private LocalDate date;
 
 

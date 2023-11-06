@@ -1,6 +1,7 @@
 package com.edstem.blogapp.contract.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jdk.jfr.Category;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +21,8 @@ public class PostRequest {
     private String title;
     @NotBlank(message = "Content cannot be blank")
     private String content;
-    private String category;
+    @ElementCollection
+    private List<String> categories;
     @FutureOrPresent
     private LocalDate date;
 }
