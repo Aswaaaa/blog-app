@@ -27,6 +27,7 @@ public class Post {
     private String title;
     private String content;
     private List<String> categories;
+    private String codeSnippet;
 
     private LocalDate date;
 

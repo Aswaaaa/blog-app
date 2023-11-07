@@ -38,7 +38,7 @@ public class PostServiceTest {
     void testCreatePost() {
         List<String> categories = Arrays.asList("Test Category");
 
-        PostRequest request = new PostRequest("Test Title", "Test Content",categories , LocalDate.now());
+        PostRequest request = new PostRequest("Test Title", "Test Content",categories ,"Test code", LocalDate.now());
         Post post = new Post();
         Post savedPost = new Post();
         PostResponse expectedResponse = new PostResponse();
@@ -75,9 +75,9 @@ public class PostServiceTest {
 
 
 
-        Post existingPost = new Post(id, "Test Title", "Test Content", categories, LocalDate.now());
-        PostRequest request = new PostRequest("Updated Title", "Updated Content", categories, LocalDate.now());
-        Post updatedPost = new Post(id, "Test Title", "Test Content", categories, LocalDate.now());
+        Post existingPost = new Post(id, "Test Title", "Test Content",categories ,"Test code", LocalDate.now());
+        PostRequest request = new PostRequest("Updated Title", "Updated Content", categories,"Updated code", LocalDate.now());
+        Post updatedPost = new Post(id, "Test Title", "Test Content",categories ,"Test code", LocalDate.now());
         PostResponse expectedResponse = modelMapper.map(updatedPost, PostResponse.class);
         when(postRepository.findById(id)).thenReturn(Optional.of(existingPost));
         when(postRepository.save(any(Post.class))).thenReturn(updatedPost);
@@ -92,7 +92,7 @@ public class PostServiceTest {
         Long id = 1L;
         List<String> categories = Arrays.asList("Test Category");
 
-        Post existingPost = new Post(id, "Test Title", "Test Content", categories, LocalDate.now());
+        Post existingPost = new Post(id,"Test Title", "Test Content",categories ,"Test code", LocalDate.now());
 
         when(postRepository.existsById(id)).thenReturn(true);
         postService.deletePostById(id);
@@ -103,8 +103,8 @@ public class PostServiceTest {
         List<String> categories = Arrays.asList("Test Category1", "Test Category2");
         String category = "Test Category1"; // Choose one category for testing
 
-        Post post1 = new Post(1L, "Test Title1", "Test Content1", categories, LocalDate.now());
-        Post post2 = new Post(2L, "Test Title2", "Test Content2", categories, LocalDate.now());
+        Post post1 = new Post(1L, "Test Title1", "Test Content1",categories ,"Test code1", LocalDate.now());
+        Post post2 = new Post(2L, "Test Title2", "Test Content2",categories ,"Test code2", LocalDate.now());
 
         List<Post> posts = Arrays.asList(post1, post2);
 

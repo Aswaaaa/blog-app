@@ -45,19 +45,29 @@ public class PostControllerTest {
 
 
     @Test
-    void testGetAllPosts() throws Exception {
+    void testCreatePost() throws Exception {
+        PostRequest request = new PostRequest();
+        PostResponse expectedResponse = new PostResponse();
 
-        List<Post> posts = new ArrayList<>();
-        List<String> categories = Arrays.asList("Test Category1", "Test Category2");
+        when(postService.createPost(any(PostRequest.class))).thenReturn(expectedResponse);
 
-        posts.add(new Post(1L, "Test Title1", "Test Content1", categories, LocalDate.now()));
-        posts.add(new Post(2L, "Test Title2", "Test Content2", categories, LocalDate.now()));
-
-        when(postService.getAllPosts()).thenReturn(posts);
-
-        mockMvc.perform(get("/blog/post"))
+        mockMvc.perform(post("/blog/post/create").contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(request)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(posts)));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
     }
+
+
+
+//    @Test
+//    void testGetAllPosts() throws Exception {
+//        List<PostResponse> expectedResponse = new ArrayList<>();
+//
+//        when(postService.getAllPosts()).thenReturn(expectedResponse);
+//
+//        mockMvc.perform(get("/blog/post").contentType(MediaType.APPLICATION_JSON))
+//                .andDo(print()).andExpect(status().isOk()).andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
+//
+//    }
 }

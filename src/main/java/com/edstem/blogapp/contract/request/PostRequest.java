@@ -23,6 +23,7 @@ public class PostRequest {
     private String content;
     @ElementCollection
     private List<String> categories;
+    private String codeSnippet;
     @FutureOrPresent
     private LocalDate date;
 }

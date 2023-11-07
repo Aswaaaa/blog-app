@@ -27,7 +27,6 @@ public class PostController {
 
     @PostMapping("/create")
     public PostResponse createPost(@Valid @RequestBody PostRequest request) {
-
         return this.postService.createPost(request);
     }
     @GetMapping
