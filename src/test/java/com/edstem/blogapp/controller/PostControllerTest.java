@@ -2,6 +2,7 @@ package com.edstem.blogapp.controller;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -46,8 +47,10 @@ public class PostControllerTest {
 
     @Test
     void testCreatePost() throws Exception {
-        PostRequest request = new PostRequest();
-        PostResponse expectedResponse = new PostResponse();
+        List<String> categories = Arrays.asList("Test Category");
+
+        PostRequest request = new PostRequest("Test Title", "Test Content",categories ,"Test code", null);
+        PostResponse expectedResponse = new PostResponse(2L,"Test Title", "Test Content",categories ,"Test code", null );
 
         when(postService.createPost(any(PostRequest.class))).thenReturn(expectedResponse);
 
@@ -59,15 +62,75 @@ public class PostControllerTest {
     }
 
 
+    @Test
+    void testGetAllPosts() throws Exception {
 
-//    @Test
-//    void testGetAllPosts() throws Exception {
-//        List<PostResponse> expectedResponse = new ArrayList<>();
-//
-//        when(postService.getAllPosts()).thenReturn(expectedResponse);
-//
-//        mockMvc.perform(get("/blog/post").contentType(MediaType.APPLICATION_JSON))
-//                .andDo(print()).andExpect(status().isOk()).andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
-//
-//    }
+        List<String> categories = Arrays.asList("Test Category");
+        List<Post> posts = new ArrayList<>();
+
+        posts.add(new Post(1L,"Test Title", "Test Content",categories ,"Test code", null));
+        posts.add(new Post(2L,"Test Title", "Test Content",categories ,"Test code", null));
+
+
+        when(postService.getAllPosts()).thenReturn(posts);
+
+
+        mockMvc.perform(get("/blog/post"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(posts)));
+    }
+    @Test
+    void testUpdatePostById() throws Exception {
+        Long id = 1L;
+        List<String> categories = Arrays.asList("Test Category");
+
+        PostRequest updateRequest = new PostRequest("Updated Title", "Updated Content", categories, "Updated code", null);
+
+        PostResponse expectedResponse = new PostResponse(id, "Test Title", "Test Content", categories, "Test code", null);
+
+        when(postService.updatePostById(eq(id),any(updateRequest.getClass()))).thenReturn(expectedResponse);
+
+        mockMvc.perform(put("/blog/post/update/" + id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(updateRequest)))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
+    }
+    @Test
+    void testDeletePostById() throws Exception {
+        Long id = 1L;
+
+        doNothing().when(postService).deletePostById(id);
+
+        mockMvc.perform(delete("/blog/post/" + id))
+                .andDo(print())
+                .andExpect(status().isOk());
+
+        verify(postService).deletePostById(id);
+    }
+    @Test
+    void testGetPostsByCategory() throws Exception {
+        String category = "Test Category";
+
+        List<PostResponse> expectedResponse = Arrays.asList(
+                new PostResponse(1L, "Test Title 1", "Test Content 1", Arrays.asList(category), "Test code 1", null),
+                new PostResponse(2L, "Test Title 2", "Test Content 2", Arrays.asList(category), "Test code 2", null)
+        );
+
+        when(postService.getPostsByCategory(eq(category))).thenReturn(expectedResponse);
+
+        mockMvc.perform(get("/categories/" + category).contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
+
+        verify(postService).getPostsByCategory(category);
+    }
+
+
+
+
+
 }

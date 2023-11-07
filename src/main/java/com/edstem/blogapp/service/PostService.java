@@ -60,7 +60,10 @@ public class PostService {
     }
 
 
+    public PostResponse getPostById(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Post" + id));
 
-
-
+        return modelMapper.map(post, PostResponse.class);
+    }
 }

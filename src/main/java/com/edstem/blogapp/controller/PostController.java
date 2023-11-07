@@ -45,6 +45,10 @@ public class PostController {
     public List<PostResponse> getPostsByCategory(@PathVariable String category) {
         return postService.getPostsByCategory(category);
     }
+@GetMapping("{id}")
+    public PostResponse getPostById(@PathVariable Long id) {
+        return postService.getPostById(id);
+}
 
 
 
