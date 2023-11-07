@@ -40,6 +40,7 @@ public class PostControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private PostService postService;
+    private List<String> categories;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -115,19 +116,39 @@ public class PostControllerTest {
         String category = "Test Category";
 
         List<PostResponse> expectedResponse = Arrays.asList(
-                new PostResponse(1L, "Test Title 1", "Test Content 1", Arrays.asList(category), "Test code 1", null),
-                new PostResponse(2L, "Test Title 2", "Test Content 2", Arrays.asList(category), "Test code 2", null)
+                new PostResponse(1L, "Test Title 1", "Test Content 1", categories, "Test code 1", null),
+                new PostResponse(2L, "Test Title 2", "Test Content 2", categories, "Test code 2", null)
         );
 
         when(postService.getPostsByCategory(eq(category))).thenReturn(expectedResponse);
 
-        mockMvc.perform(get("/categories/" + category).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/blog/post/categories/" + category)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
 
         verify(postService).getPostsByCategory(category);
     }
+    @Test
+    void testGetPostById() throws Exception {
+        Long id = 1L;
+        String category = "Test Category";
+
+        PostResponse postResponse =  new PostResponse(1L, "Test Title 1", "Test Content 1", categories, "Test code 1", null);
+
+        when(postService.getPostById(id)).thenReturn(postResponse);
+
+        mockMvc.perform(get("/blog/post/"+ id))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(postResponse)));
+
+
+    }
+
+
+
 
 
 

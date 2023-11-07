@@ -117,6 +117,20 @@ public class PostServiceTest {
         List<PostResponse> actualResponse = postService.getPostsByCategory(category);
         assertEquals(expectedResponse, actualResponse);
     }
+    @Test
+    void testGetPostById() {
+        Long id =1L;
+        List<String> categories = Arrays.asList("Test Category");
 
+        Post post = new Post(id, "Test Title1", "Test Content1",categories ,"Test code1", LocalDate.now());
+
+        PostResponse expectedResponse = modelMapper.map(post, PostResponse.class);
+
+        when(postRepository.findById(id)).thenReturn(Optional.of(post));
+
+        PostResponse actualResponse = postService.getPostById(id);
+
+        assertEquals(expectedResponse,actualResponse);
+    }
 
 }
