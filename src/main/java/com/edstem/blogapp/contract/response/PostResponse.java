@@ -1,15 +1,12 @@
 package com.edstem.blogapp.contract.response;
 
-import jdk.jfr.Category;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @Getter
@@ -23,6 +20,4 @@ public class PostResponse {
     private List<String> categories;
     private String codeSnippet;
     private LocalDate date;
-
-
 }

@@ -5,6 +5,7 @@ import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.model.Post;
 import com.edstem.blogapp.service.PostService;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,8 +15,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/blog/post")
@@ -34,7 +33,8 @@ public class PostController {
     }
 
     @PutMapping("/update/{id}")
-    public PostResponse updatePostById(@Valid @PathVariable Long id, @RequestBody PostRequest request) {
+    public PostResponse updatePostById(
+            @Valid @PathVariable Long id, @RequestBody PostRequest request) {
         return postService.updatePostById(id, request);
     }
 
@@ -52,6 +52,4 @@ public class PostController {
     public PostResponse getPostById(@PathVariable Long id) {
         return postService.getPostById(id);
     }
-
-
 }

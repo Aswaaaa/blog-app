@@ -5,14 +5,12 @@ import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.exception.EntityNotFoundException;
 import com.edstem.blogapp.model.Post;
 import com.edstem.blogapp.repository.PostRepository;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -32,13 +30,16 @@ public class PostService {
     }
 
     public PostResponse updatePostById(Long id, PostRequest request) {
-        Post post = postRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Post ",id));
+        Post post =
+                postRepository
+                        .findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Post ", id));
         modelMapper.map(request, post);
         Post updatedPost = postRepository.save(post);
-        return modelMapper.map(updatedPost,PostResponse.class);
+        return modelMapper.map(updatedPost, PostResponse.class);
     }
 
-    public void deletePostById(Long id)  {
+    public void deletePostById(Long id) {
         if (!postRepository.existsById(id)) {
             throw new EntityNotFoundException("Post ", id);
         }
@@ -46,9 +47,10 @@ public class PostService {
     }
 
     public List<PostResponse> getPostsByCategory(String category) {
-        List<Post> posts = postRepository.findAll().stream()
-                .filter(post -> post.getCategories().contains(category))
-                .collect(Collectors.toList());
+        List<Post> posts =
+                postRepository.findAll().stream()
+                        .filter(post -> post.getCategories().contains(category))
+                        .collect(Collectors.toList());
 
         if (posts.isEmpty()) {
             throw new EntityNotFoundException("No posts found for category: " + category);
@@ -59,10 +61,11 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-
     public PostResponse getPostById(Long id) {
-        Post post = postRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Post" + id));
+        Post post =
+                postRepository
+                        .findById(id)
+                        .orElseThrow(() -> new EntityNotFoundException("Post" + id));
 
         return modelMapper.map(post, PostResponse.class);
     }
