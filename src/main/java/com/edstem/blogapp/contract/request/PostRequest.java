@@ -1,5 +1,6 @@
 package com.edstem.blogapp.contract.request;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
@@ -17,9 +18,11 @@ public class PostRequest {
     private String title;
 
     @NotBlank(message = "Content cannot be blank")
+    @Column(columnDefinition = "text")
     private String content;
 
     @ElementCollection private List<String> categories;
+    @Column(columnDefinition = "text")
     private String codeSnippet;
     @FutureOrPresent private LocalDate date;
 }
