@@ -22,7 +22,9 @@ public class PostRequest {
     private String content;
 
     @ElementCollection private List<String> categories;
+
     @Column(columnDefinition = "text")
     private String codeSnippet;
+
     @FutureOrPresent private LocalDate date;
 }
