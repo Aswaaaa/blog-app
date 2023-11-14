@@ -1,7 +1,6 @@
 package com.edstem.blogapp.contract.request;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
@@ -21,7 +20,7 @@ public class PostRequest {
     @Column(columnDefinition = "text")
     private String content;
 
-    @ElementCollection private List<String> categories;
+    private List<String> categories;
 
     @Column(columnDefinition = "text")
     private String codeSnippet;
