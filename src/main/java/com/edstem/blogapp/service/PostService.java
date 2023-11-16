@@ -5,10 +5,17 @@ import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.exception.EntityNotFoundException;
 import com.edstem.blogapp.model.Post;
 import com.edstem.blogapp.repository.PostRepository;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +32,9 @@ public class PostService {
         return modelMapper.map(savedPost, PostResponse.class);
     }
 
-    public List<Post> getAllPosts() {
-        return postRepository.findAll();
+    public Page<PostResponse> getPostsByPageable(Pageable pageable) {
+        Page<Post> postLists = postRepository.findAll(pageable);
+        return postLists.map(post -> modelMapper.map(post, PostResponse.class));
     }
 
     public PostResponse updatePostById(Long id, PostRequest request) {
@@ -69,4 +77,25 @@ public class PostService {
 
         return modelMapper.map(post, PostResponse.class);
     }
+    @Transactional
+    public Page<PostResponse> searchAndPaginate(String query, int page, int size, String sort) {
+        String lowerCaseQuery = (query!=null)? query.toLowerCase(): null;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sort.split(",")[0]).ascending());
+        Page<Post>postsPage = postRepository.searchAllFields(lowerCaseQuery, pageable);
+        return postsPage.map(this::convertToPostResponse);
+    }
+
+    private PostResponse convertToPostResponse(Post post) {
+        return PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .categories(post.getCategories())
+                .codeSnippet(post.getCodeSnippet())
+                .date(post.getDate())
+                .build();
+    }
+
+
 }

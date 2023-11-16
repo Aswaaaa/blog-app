@@ -18,6 +18,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 public class PostServiceTest {
     private PostRepository postRepository;
@@ -56,14 +60,14 @@ public class PostServiceTest {
         Post post2 = new Post();
         List<Post> posts = Arrays.asList(post1, post2);
 
-        when(postRepository.findAll()).thenReturn(posts);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Post> page = new PageImpl<>(posts, pageable, posts.size());
 
-        List<PostResponse> expectedResponses =
-                Arrays.asList(new PostResponse(), new PostResponse());
+        when(postRepository.findAll(pageable)).thenReturn(page);
 
-        List<Post> actualResponses = postService.getAllPosts();
+        Page<Post> actualResponses = postService.getAllPosts(pageable);
 
-        assertEquals(expectedResponses.size(), actualResponses.size());
+        assertEquals(posts.size(), actualResponses.getContent().size());
     }
 
     @Test

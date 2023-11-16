@@ -5,7 +5,6 @@ import lombok.Builder;
 
 public enum Role {
     ADMIN,
-    PUBLISHER,
     USER
 
 }

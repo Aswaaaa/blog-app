@@ -27,6 +27,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -69,12 +73,17 @@ public class PostControllerTest {
         posts.add(new Post(1L, "Test Title", "Test Content", categories, "Test code", null));
         posts.add(new Post(2L, "Test Title", "Test Content", categories, "Test code", null));
 
-        when(postService.getAllPosts()).thenReturn(posts);
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Post> page = new PageImpl<>(posts, pageable, posts.size());
 
-        mockMvc.perform(get("/blog/post"))
+        when(postService.getAllPosts(pageable)).thenReturn(page);
+
+        mockMvc.perform(post("/blog/post")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(pageable)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(posts)));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(page.getContent())));
     }
 
     @Test
