@@ -5,19 +5,18 @@ import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.exception.EntityNotFoundException;
 import com.edstem.blogapp.model.Post;
 import com.edstem.blogapp.repository.PostRepository;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,15 +26,24 @@ public class PostService {
     private final ModelMapper modelMapper;
 
     public PostResponse createPost(PostRequest request) {
-        Post post = modelMapper.map(request, Post.class);
+        Post post = Post.builder()
+                .title(request.getTitle())
+                .content(request.getContent())
+                .categories(request.getCategories())
+                .codeSnippet(request.getCodeSnippet())
+                .createdTime(LocalDateTime.now())
+                .build();
         Post savedPost = postRepository.save(post);
         return modelMapper.map(savedPost, PostResponse.class);
     }
 
+
     public Page<PostResponse> getPostsByPageable(Pageable pageable) {
-        Page<Post> postLists = postRepository.findAll(pageable);
+        Pageable sortedByTimestampDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdTime").descending());
+        Page<Post> postLists = postRepository.findAll(sortedByTimestampDesc);
         return postLists.map(post -> modelMapper.map(post, PostResponse.class));
     }
+
 
     public PostResponse updatePostById(Long id, PostRequest request) {
         Post post =
@@ -77,25 +85,15 @@ public class PostService {
 
         return modelMapper.map(post, PostResponse.class);
     }
-    @Transactional
-    public Page<PostResponse> searchAndPaginate(String query, int page, int size, String sort) {
-        String lowerCaseQuery = (query!=null)? query.toLowerCase(): null;
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(sort.split(",")[0]).ascending());
-        Page<Post>postsPage = postRepository.searchAllFields(lowerCaseQuery, pageable);
-        return postsPage.map(this::convertToPostResponse);
+    public List<PostResponse> searchPosts(String query){
+        List<Post> responses = postRepository.searchPosts(query);
+        return responses.stream()
+                .map(post -> modelMapper.map(post, PostResponse.class))
+                .collect(Collectors.toList());
     }
 
-    private PostResponse convertToPostResponse(Post post) {
-        return PostResponse.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .categories(post.getCategories())
-                .codeSnippet(post.getCodeSnippet())
-                .date(post.getDate())
-                .build();
-    }
+
+
 
 
 }
