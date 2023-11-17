@@ -85,8 +85,9 @@ public class PostService {
 
         return modelMapper.map(post, PostResponse.class);
     }
-    public List<PostResponse> searchPosts(String query){
-        List<Post> responses = postRepository.searchPosts(query);
+    public List<PostResponse> searchPosts(String query, Sort sort){
+        Sort defaultSort = Sort.by(Sort.Direction.DESC, "id");
+        List<Post> responses = postRepository.searchPosts(query,sort);
         return responses.stream()
                 .map(post -> modelMapper.map(post, PostResponse.class))
                 .collect(Collectors.toList());

@@ -74,7 +74,8 @@ public class PostController {
 
     @GetMapping("/search")
     public List<PostResponse> searchPosts(@RequestParam("query")String query) {
-        return postService.searchPosts(query);
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        return postService.searchPosts(query,sort);
 
     }
 
