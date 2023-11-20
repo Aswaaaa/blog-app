@@ -68,6 +68,7 @@ public class PostService {
                         .filter(post -> post.getCategories().contains(category))
                         .collect(Collectors.toList());
 
+
         if (posts.isEmpty()) {
             throw new EntityNotFoundException("No posts found for category: " + category);
         }
@@ -85,16 +86,13 @@ public class PostService {
 
         return modelMapper.map(post, PostResponse.class);
     }
-    public List<PostResponse> searchPosts(String query, Sort sort){
+
+    public List<PostResponse> searchPosts(String query, Sort sort) {
         Sort defaultSort = Sort.by(Sort.Direction.DESC, "id");
-        List<Post> responses = postRepository.searchPosts(query,sort);
+        List<Post> responses = postRepository.searchPosts(query, sort);
         return responses.stream()
                 .map(post -> modelMapper.map(post, PostResponse.class))
                 .collect(Collectors.toList());
     }
-
-
-
-
 
 }
