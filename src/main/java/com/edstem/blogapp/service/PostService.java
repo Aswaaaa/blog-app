@@ -1,11 +1,13 @@
 package com.edstem.blogapp.service;
 
 import com.edstem.blogapp.contract.request.PostRequest;
+import com.edstem.blogapp.contract.request.PostSummaryRequest;
 import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.exception.EntityNotFoundException;
 import com.edstem.blogapp.model.Post;
 import com.edstem.blogapp.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,8 +43,9 @@ public class PostService {
 
     public Page<PostResponse> getPostsByPageable(Pageable pageable) {
         Pageable sortedByTimestampDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdTime").descending());
-        Page<Post> postLists = postRepository.findAll(sortedByTimestampDesc);
-        return postLists.map(post -> modelMapper.map(post, PostResponse.class));
+//        Page<Post> postLists = postRepository.findAll(sortedByTimestampDesc);
+        Page<PostSummaryRequest> postSummaries = postRepository.findPostsSummary(pageable);
+        return postSummaries.map(post -> modelMapper.map(post, PostResponse.class));
     }
 
 
@@ -50,7 +54,10 @@ public class PostService {
                 postRepository
                         .findById(id)
                         .orElseThrow(() -> new EntityNotFoundException("Post ", id));
+
+        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(request, post);
+        post.setUpdatedTime(LocalDateTime.now());
         Post updatedPost = postRepository.save(post);
         return modelMapper.map(updatedPost, PostResponse.class);
     }
@@ -90,6 +97,11 @@ public class PostService {
     public List<PostResponse> searchPosts(String query, Sort sort) {
         Sort defaultSort = Sort.by(Sort.Direction.DESC, "id");
         List<Post> responses = postRepository.searchPosts(query, sort);
+
+        if (responses.isEmpty()) {
+            throw new EntityNotFoundException("No posts found for the given query: " + query);
+        }
+
         return responses.stream()
                 .map(post -> modelMapper.map(post, PostResponse.class))
                 .collect(Collectors.toList());

@@ -1,6 +1,6 @@
 package com.edstem.blogapp.contract.response;
 
-import com.edstem.blogapp.model.Role;
+import com.edstem.blogapp.model.user.Role;
 import lombok.Data;
 
 @Data

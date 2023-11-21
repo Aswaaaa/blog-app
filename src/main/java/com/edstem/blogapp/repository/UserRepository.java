@@ -1,6 +1,6 @@
 package com.edstem.blogapp.repository;
 
-import com.edstem.blogapp.model.User;
+import com.edstem.blogapp.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

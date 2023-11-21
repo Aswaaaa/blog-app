@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/blog/post")
 @RequiredArgsConstructor
+@CrossOrigin("*")
 public class PostController {
     private final PostService postService;
     private final ModelMapper modelMapper;
@@ -73,9 +75,9 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public List<PostResponse> searchPosts(@RequestParam("query")String query) {
+    public List<PostResponse> searchPosts(@RequestParam("query") String query) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        return postService.searchPosts(query,sort);
+        return postService.searchPosts(query, sort);
 
     }
 

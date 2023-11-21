@@ -11,6 +11,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+//import static com.edstem.blogapp.model.user.Permission.ADMIN_CREATE;
+//import static com.edstem.blogapp.model.user.Permission.ADMIN_DELETE;
+//import static com.edstem.blogapp.model.user.Permission.ADMIN_READ;
+//import static com.edstem.blogapp.model.user.Permission.ADMIN_UPDATE;
+import static com.edstem.blogapp.model.user.Role.ADMIN;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -21,12 +27,16 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf()
+        http.csrf()
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers("/blog/**")
                 .permitAll()
+//                .requestMatchers("/blog/**").hasRole(ADMIN.name())
+//                .requestMatchers("/blog/**").hasAuthority(ADMIN_READ.name())
+//                .requestMatchers("/blog/**").hasAuthority(ADMIN_CREATE.name())
+//                .requestMatchers("/blog/**").hasAuthority(ADMIN_UPDATE.name())
+//                .requestMatchers("/blog/**").hasAuthority(ADMIN_DELETE.name())
                 .anyRequest()
                 .authenticated()
                 .and()

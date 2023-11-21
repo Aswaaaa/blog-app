@@ -6,16 +6,20 @@ import com.edstem.blogapp.contract.request.SignUpRequest;
 import com.edstem.blogapp.contract.response.LoginResponse;
 import com.edstem.blogapp.contract.response.SignUpResponse;
 import com.edstem.blogapp.exception.EntityAlreadyExistsException;
-import com.edstem.blogapp.model.Role;
-import com.edstem.blogapp.model.User;
+import com.edstem.blogapp.model.user.Role;
+import com.edstem.blogapp.model.user.User;
 import com.edstem.blogapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -27,8 +31,8 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
     private final ModelMapper modelMapper;
 
-    public SignUpResponse register(SignUpRequest request){
-        if(userRepository.existsByEmail(request.getEmail())){
+    public SignUpResponse register(SignUpRequest request) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new EntityAlreadyExistsException(request.getEmail());
         }
         Role roleName = Role.ADMIN;
@@ -38,13 +42,18 @@ public class UserService {
                 .role(Role.ADMIN)
                 .build();
         user = userRepository.save(user);
+//        modelMapper.typeMap(User.class, SignUpResponse.class).addMapping(
+//                src ->src.getRole(),
+//                SignUpResponse::setRole);
+
         return modelMapper.map(user, SignUpResponse.class);
     }
-    public LoginResponse authenticate(LoginRequest request){
+
+    public LoginResponse authenticate(LoginRequest request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(),request.getPassword()));
+                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        String jwtToken = jwtService.generateToken(user,user.getRole().toString());
+        String jwtToken = jwtService.generateToken(user, user.getRole().toString());
         return LoginResponse.builder().token(jwtToken).build();
 
     }
