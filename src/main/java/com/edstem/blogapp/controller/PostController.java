@@ -51,10 +51,6 @@ public class PostController {
         return modelMapper.map(savedPost, PostResponse.class);
     }
 
-//    @PostMapping("/pageable")
-//    public Page<PostResponse> getPostsByPageable(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-//        return postService.getPostsByPageable(pageable);
-//    }
 
     @PutMapping("/update/{id}")
     public PostResponse updatePostById(

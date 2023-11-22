@@ -23,9 +23,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Post findById(long id);
 
-//    @Query("SELECT p.id AS id, p.title AS title, p.createdTime AS createdTime, p.updatedTime AS updatedTime, p.categories AS categories " +
-//            "FROM Post p")
-//    Page<PostSummaryRequest>findPostsSummary(Pageable pageable);
 
     @Query("SELECT p FROM Post p WHERE p.status <> ?1")
     List<Post> findAllByStatusNot(PostStatus status, Pageable page);

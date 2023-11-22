@@ -45,14 +45,6 @@ public class PostService {
     }
 
 
-//    public Page<PostResponse> getPostsByPageable(Pageable pageable) {
-//        Pageable sortedByTimestampDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdTime").descending());
-////        Page<Post> postLists = postRepository.findAll(sortedByTimestampDesc);
-//        Page<PostSummaryRequest> postSummaries = postRepository.findPostsSummary(pageable);
-//        return postSummaries.map(post -> modelMapper.map(post, PostResponse.class));
-//    }
-
-
     public PostResponse updatePostById(Long id, PostRequest request) {
         Post post =
                 postRepository
@@ -113,12 +105,6 @@ public class PostService {
 
     public List<Post> listPosts(ListPostRequest request) {
         List<Post> posts;
-//        String email = context.currentUser();
-//        Optional<User> user = userRepository.findByEmail(email);
-//
-//        if (user.isEmpty()) {
-//            throw new EntityNotFoundException("User " + email + " not found");
-//        }
         Pageable page = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by("id").descending());
 
         log.info("Request {} for list posts is ", request);
@@ -132,11 +118,6 @@ public class PostService {
 
     public Long postsCount(ListPostRequest request) {
         Long postCount;
-//        String email = context.currentUser();
-//        Optional<User> user = userRepository.findByEmail(email);
-//        if (user.isEmpty()) {
-//            throw new EntityNotFoundException("User " + email + "not found");
-//        }
         log.info("Request {} for list post is ", request);
         postCount = postRepository.countByStatusNot(PostStatus.INACTIVE);
 
