@@ -1,31 +1,34 @@
 package com.edstem.blogapp.service;
 
+import com.edstem.blogapp.contract.request.ListPostRequest;
 import com.edstem.blogapp.contract.request.PostRequest;
-import com.edstem.blogapp.contract.request.PostSummaryRequest;
 import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.exception.EntityNotFoundException;
-import com.edstem.blogapp.model.Post;
+import com.edstem.blogapp.model.post.Post;
+import com.edstem.blogapp.model.post.PostStatus;
 import com.edstem.blogapp.repository.PostRepository;
+import com.edstem.blogapp.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final ModelMapper modelMapper;
 
     public PostResponse createPost(PostRequest request) {
@@ -35,18 +38,19 @@ public class PostService {
                 .categories(request.getCategories())
                 .codeSnippet(request.getCodeSnippet())
                 .createdTime(LocalDateTime.now())
+                .status(PostStatus.ACTIVE)
                 .build();
         Post savedPost = postRepository.save(post);
         return modelMapper.map(savedPost, PostResponse.class);
     }
 
 
-    public Page<PostResponse> getPostsByPageable(Pageable pageable) {
-        Pageable sortedByTimestampDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdTime").descending());
-//        Page<Post> postLists = postRepository.findAll(sortedByTimestampDesc);
-        Page<PostSummaryRequest> postSummaries = postRepository.findPostsSummary(pageable);
-        return postSummaries.map(post -> modelMapper.map(post, PostResponse.class));
-    }
+//    public Page<PostResponse> getPostsByPageable(Pageable pageable) {
+//        Pageable sortedByTimestampDesc = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), Sort.by("createdTime").descending());
+////        Page<Post> postLists = postRepository.findAll(sortedByTimestampDesc);
+//        Page<PostSummaryRequest> postSummaries = postRepository.findPostsSummary(pageable);
+//        return postSummaries.map(post -> modelMapper.map(post, PostResponse.class));
+//    }
 
 
     public PostResponse updatePostById(Long id, PostRequest request) {
@@ -107,4 +111,37 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    public List<Post> listPosts(ListPostRequest request) {
+        List<Post> posts;
+//        String email = context.currentUser();
+//        Optional<User> user = userRepository.findByEmail(email);
+//
+//        if (user.isEmpty()) {
+//            throw new EntityNotFoundException("User " + email + " not found");
+//        }
+        Pageable page = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by("id").descending());
+
+        log.info("Request {} for list posts is ", request);
+        posts = postRepository.findAllByStatusNot(PostStatus.INACTIVE, page);
+
+        log.info("Fetched {} posts", posts.size());
+        return posts.stream()
+                .map(post -> new ModelMapper().map(post, Post.class))
+                .collect(Collectors.toList());
+    }
+
+    public Long postsCount(ListPostRequest request) {
+        Long postCount;
+//        String email = context.currentUser();
+//        Optional<User> user = userRepository.findByEmail(email);
+//        if (user.isEmpty()) {
+//            throw new EntityNotFoundException("User " + email + "not found");
+//        }
+        log.info("Request {} for list post is ", request);
+        postCount = postRepository.countByStatusNot(PostStatus.INACTIVE);
+
+        log.info("Fetched all posts - count {}", postCount);
+        return postCount;
+
+    }
 }

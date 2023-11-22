@@ -2,7 +2,7 @@ package com.edstem.blogapp.service;
 
 import com.edstem.blogapp.contract.request.PostRequest;
 import com.edstem.blogapp.contract.response.PostResponse;
-import com.edstem.blogapp.model.Post;
+import com.edstem.blogapp.model.post.Post;
 import com.edstem.blogapp.repository.PostRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

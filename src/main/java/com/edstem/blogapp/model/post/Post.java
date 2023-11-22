@@ -1,7 +1,6 @@
-package com.edstem.blogapp.model;
+package com.edstem.blogapp.model.post;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -10,7 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +29,7 @@ public class Post {
     private String codeSnippet;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
+    private PostStatus status;
 
 
 }

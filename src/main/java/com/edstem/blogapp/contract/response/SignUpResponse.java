@@ -6,6 +6,5 @@ import lombok.Data;
 @Data
 public class SignUpResponse {
     private String email;
-    private String password;
     private Role role;
 }

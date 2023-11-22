@@ -1,17 +1,19 @@
 package com.edstem.blogapp.controller;
 
+import com.edstem.blogapp.contract.request.ListPostRequest;
 import com.edstem.blogapp.contract.request.PostRequest;
+import com.edstem.blogapp.contract.response.ListPostResponse;
 import com.edstem.blogapp.contract.response.PostResponse;
-import com.edstem.blogapp.model.Post;
+import com.edstem.blogapp.model.post.Post;
+import com.edstem.blogapp.model.post.PostStatus;
 import com.edstem.blogapp.repository.PostRepository;
 import com.edstem.blogapp.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,15 +45,16 @@ public class PostController {
                 .categories(request.getCategories())
                 .codeSnippet(request.getCodeSnippet())
                 .createdTime(LocalDateTime.now())
+                .status(PostStatus.ACTIVE)
                 .build();
         Post savedPost = postRepository.save(post);
         return modelMapper.map(savedPost, PostResponse.class);
     }
 
-    @PostMapping("/pageable")
-    public Page<PostResponse> getPostsByPageable(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return postService.getPostsByPageable(pageable);
-    }
+//    @PostMapping("/pageable")
+//    public Page<PostResponse> getPostsByPageable(@PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+//        return postService.getPostsByPageable(pageable);
+//    }
 
     @PutMapping("/update/{id}")
     public PostResponse updatePostById(
@@ -79,6 +82,16 @@ public class PostController {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         return postService.searchPosts(query, sort);
 
+    }
+
+    @PostMapping("/list")
+    public ResponseEntity<ListPostResponse> listPosts(@RequestBody ListPostRequest request) {
+        ListPostResponse response = ListPostResponse.builder()
+                .posts(postService.listPosts(request))
+                .totalPosts(postService.postsCount(request))
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

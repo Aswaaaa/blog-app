@@ -1,5 +1,6 @@
 package com.edstem.blogapp.contract.response;
 
+import com.edstem.blogapp.model.user.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,4 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginResponse {
     private String token;
+    private Role role;
 }

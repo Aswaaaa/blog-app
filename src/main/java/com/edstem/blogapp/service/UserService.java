@@ -14,12 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
 
 @Service
 @Slf4j
@@ -54,7 +50,10 @@ public class UserService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         String jwtToken = jwtService.generateToken(user, user.getRole().toString());
-        return LoginResponse.builder().token(jwtToken).build();
+        return LoginResponse.builder()
+                .token(jwtToken)
+                .role(Role.valueOf(user.getRole().toString()))
+                .build();
 
     }
 }
