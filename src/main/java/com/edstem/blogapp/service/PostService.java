@@ -67,11 +67,15 @@ public class PostService {
     }
 
     public List<PostResponse> getPostsByCategory(String category) {
+        String lowerCaseCategory = category.toLowerCase();
+
         List<Post> posts =
                 postRepository.findAll().stream()
-                        .filter(post -> post.getCategories().contains(category))
+                        .filter(post -> post.getCategories().stream()
+                                .map(String::toLowerCase)
+                                .collect(Collectors.toList())
+                                .contains(lowerCaseCategory))
                         .collect(Collectors.toList());
-
 
         if (posts.isEmpty()) {
             throw new EntityNotFoundException("No posts found for category: " + category);
@@ -81,6 +85,7 @@ public class PostService {
                 .map(post -> modelMapper.map(post, PostResponse.class))
                 .collect(Collectors.toList());
     }
+
 
     public PostResponse getPostById(Long id) {
         Post post =
