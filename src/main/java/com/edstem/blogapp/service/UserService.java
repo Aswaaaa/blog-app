@@ -19,9 +19,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -45,10 +43,6 @@ public class UserService {
                 .role(Role.USER)
                 .build();
         user = userRepository.save(user);
-//        modelMapper.typeMap(User.class, SignUpResponse.class).addMapping(
-//                src ->src.getRole(),
-//                SignUpResponse::setRole);
-
         return modelMapper.map(user, SignUpResponse.class);
     }
 
@@ -56,37 +50,45 @@ public class UserService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
-        String jwtToken = jwtService.generateToken(user, user.getRole().toString());
+        String jwtToken = jwtService.generateToken(user, user.getRole().getPermissions());
         return LoginResponse.builder()
                 .token(jwtToken)
-                .role(Role.valueOf(user.getRole().toString()))
+                .role(Role.USER)
                 .build();
 
     }
 
     @PostConstruct
-    public void initDefaultAdminUser() {
-        createDefaultAdmin("Sriram", "sriram@gmail.com", "sriramPassword");
-        createDefaultAdmin("Aswanth", "aswanth@gmail.com", "aswanthPassword");
+    public void initDefaultAdminUsers() {
+        createDefaultAdmin("Sriram", "sriram@example.com", "Password");
+        createDefaultAdmin("Admin", "admin@example.com", "adminPassword");
     }
-        private void createDefaultAdmin (String name, String email, String password){
 
-            User adminUser = new User();
-            adminUser.setName(name);
-            adminUser.setPassword(passwordEncoder.encode(password));
-            adminUser.setEmail(email);
-            adminUser.setRole(Role.ADMIN);
+    private void createDefaultAdmin(String name, String email, String password) {
 
-            List<Permission> permissions = Arrays.asList(
-                    Permission.ADMIN_READ,
-                    Permission.ADMIN_UPDATE,
-                    Permission.ADMIN_CREATE,
-                    Permission.ADMIN_DELETE
-            );
-            adminUser.setPermissions(permissions);
+        userRepository.findByEmail(email)
+                .ifPresentOrElse(
+                        existingUser -> {
+                        },
+                        () -> {
+                            User adminUser = new User();
+                            adminUser.setName(name);
+                            adminUser.setPassword(passwordEncoder.encode(password));
+                            adminUser.setEmail(email);
+                            adminUser.setRole(Role.ADMIN);
 
-            userRepository.save(adminUser);
-        }
+                            List<Permission> permissions = Arrays.asList(
+                                    Permission.ADMIN_READ,
+                                    Permission.ADMIN_UPDATE,
+                                    Permission.ADMIN_CREATE,
+                                    Permission.ADMIN_DELETE
+                            );
+                            adminUser.setPermissions(permissions);
 
+                            userRepository.save(adminUser);
+                        }
+                );
     }
+
+}
 

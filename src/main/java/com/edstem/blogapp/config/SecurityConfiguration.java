@@ -14,7 +14,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
+@EnableMethodSecurity(prePostEnabled = true,jsr250Enabled = true)
 public class SecurityConfiguration {
     private final JwtAuthenticationFilter JwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
@@ -24,13 +24,6 @@ public class SecurityConfiguration {
         http.csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/blog/**")
-                .permitAll()
-//                .requestMatchers("/blog/**").hasRole(ADMIN.name())
-//                .requestMatchers("/blog/**").hasAuthority(ADMIN_READ.name())
-//                .requestMatchers("/blog/**").hasAuthority(ADMIN_CREATE.name())
-//                .requestMatchers("/blog/**").hasAuthority(ADMIN_UPDATE.name())
-//                .requestMatchers("/blog/**").hasAuthority(ADMIN_DELETE.name())
                 .anyRequest()
                 .authenticated()
                 .and()

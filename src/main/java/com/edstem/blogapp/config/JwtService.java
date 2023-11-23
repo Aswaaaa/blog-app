@@ -1,16 +1,21 @@
 package com.edstem.blogapp.config;
 
+import com.edstem.blogapp.model.user.Permission;
+import com.edstem.blogapp.model.user.Role;
+import com.edstem.blogapp.model.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.validation.constraints.Max;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -27,17 +32,23 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails, String string) {
-        return generateToken(new HashMap<>(), userDetails);
-    }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+
+    public String generateToken(User userDetails, List<Permission> permissions) {
+        Role role = userDetails.getRole();
+        Map<String, Object> claims = new HashMap<>();
+        if (role!=null) {
+            claims.put("id",userDetails.getId());
+            claims.put("role",role);
+            claims.put("permissions",permissions);
+
+        }
         return Jwts
                 .builder()
-                .setClaims(extraClaims)
+                .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 48))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
