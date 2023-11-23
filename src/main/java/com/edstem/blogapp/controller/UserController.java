@@ -27,7 +27,6 @@ public class UserController {
     private final AuthenticationManager authenticationManager;
 
     @PostMapping("/signup")
-//    @PreAuthorize("hasAuthority('admin:create')")
     public ResponseEntity<SignUpResponse> signUp(@Valid @RequestBody SignUpRequest request) {
         return ResponseEntity.ok(userService.register(request));
     }

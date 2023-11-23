@@ -52,9 +52,10 @@ public class UserService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         String jwtToken = jwtService.generateToken(user, user.getRole().getPermissions());
+        Role role = user.getRole();
         return LoginResponse.builder()
                 .token(jwtToken)
-                .role(Role.USER)
+                .role(role)
                 .build();
 
     }
