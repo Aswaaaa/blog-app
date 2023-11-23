@@ -1,5 +1,6 @@
 package com.edstem.blogapp.contract.response;
 
+import com.edstem.blogapp.contract.request.PostSummaryRequest;
 import com.edstem.blogapp.model.post.Post;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

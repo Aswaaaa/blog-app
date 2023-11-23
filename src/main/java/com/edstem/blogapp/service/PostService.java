@@ -2,6 +2,7 @@ package com.edstem.blogapp.service;
 
 import com.edstem.blogapp.contract.request.ListPostRequest;
 import com.edstem.blogapp.contract.request.PostRequest;
+import com.edstem.blogapp.contract.request.PostSummaryRequest;
 import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.exception.EntityNotFoundException;
 import com.edstem.blogapp.model.post.Post;
@@ -103,23 +104,22 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public List<Post> listPosts(ListPostRequest request) {
-        List<Post> posts;
+    public List<PostSummaryRequest> listPosts(ListPostRequest request) {
         Pageable page = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by("id").descending());
 
         log.info("Request {} for list posts is ", request);
-        posts = postRepository.findAllByStatusNot(PostStatus.INACTIVE, page);
+        List<PostSummaryRequest> posts = postRepository.findAllByStatusNot(PostStatus.INACTIVE, page)
+                .stream()
+                .map(post -> modelMapper.map(post, PostSummaryRequest.class))
+                .collect(Collectors.toList());
 
         log.info("Fetched {} posts", posts.size());
-        return posts.stream()
-                .map(post -> new ModelMapper().map(post, Post.class))
-                .collect(Collectors.toList());
+        return posts;
     }
 
     public Long postsCount(ListPostRequest request) {
-        Long postCount;
         log.info("Request {} for list post is ", request);
-        postCount = postRepository.countByStatusNot(PostStatus.INACTIVE);
+         Long postCount = postRepository.countByStatusNot(PostStatus.INACTIVE);
 
         log.info("Fetched all posts - count {}", postCount);
         return postCount;

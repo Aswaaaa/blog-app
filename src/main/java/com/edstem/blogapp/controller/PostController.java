@@ -2,6 +2,7 @@ package com.edstem.blogapp.controller;
 
 import com.edstem.blogapp.contract.request.ListPostRequest;
 import com.edstem.blogapp.contract.request.PostRequest;
+import com.edstem.blogapp.contract.request.PostSummaryRequest;
 import com.edstem.blogapp.contract.response.ListPostResponse;
 import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.model.post.Post;
@@ -11,6 +12,7 @@ import com.edstem.blogapp.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/blog/post")
@@ -90,13 +93,15 @@ public class PostController {
     @PostMapping("/list")
     @PreAuthorize("hasAuthority('admin:read') or hasAuthority('user:read')")
     public ResponseEntity<ListPostResponse> listPosts(@RequestBody ListPostRequest request) {
+
+        List<PostSummaryRequest> posts = postService.listPosts(request);
+
         ListPostResponse response = ListPostResponse.builder()
-                .posts(postService.listPosts(request))
+                .posts(modelMapper.map(posts, new TypeToken<List<Post>>() {}.getType()))
                 .totalPosts(postService.postsCount(request))
                 .build();
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
+        return ResponseEntity.ok(response);    }
 
 
 }

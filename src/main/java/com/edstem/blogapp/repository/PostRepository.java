@@ -1,5 +1,6 @@
 package com.edstem.blogapp.repository;
 
+import com.edstem.blogapp.contract.request.PostSummaryRequest;
 import com.edstem.blogapp.model.post.Post;
 import com.edstem.blogapp.model.post.PostStatus;
 import org.springframework.data.domain.Pageable;
@@ -24,8 +25,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Post findById(long id);
 
 
-    @Query("SELECT p FROM Post p WHERE p.status <> ?1")
-    List<Post> findAllByStatusNot(PostStatus status, Pageable page);
+    @Query("SELECT p.id AS id, p.title AS title, p.categories AS categories, p.createdTime AS createdTime FROM Post p WHERE p.status <> ?1")
+    List<PostSummaryRequest> findAllByStatusNot(PostStatus status, Pageable page);
+
 
     @Query("SELECT COUNT(p) FROM Post p WHERE p.status <> ?1")
     long countByStatusNot(PostStatus status);
