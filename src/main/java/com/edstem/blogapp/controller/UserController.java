@@ -19,9 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/blog")
+@RequestMapping("/security")
 @RequiredArgsConstructor
-//@PreAuthorize("hasRole('ADMIN')")
 @CrossOrigin("*")
 public class UserController {
     private final UserService userService;
