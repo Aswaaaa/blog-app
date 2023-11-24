@@ -15,9 +15,11 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("SELECT p FROM Post p WHERE " +
-            "p.title LIKE CONCAT('%',:query, '%')" +
-            "Or p.content LIKE CONCAT('%', :query, '%')" + "Or p.codeSnippet LIKE CONCAT('%', :query, '%')")
+            "LOWER(p.title) LIKE LOWER(CONCAT('%',:query, '%'))" +
+            "OR LOWER(p.content) LIKE LOWER(CONCAT('%', :query, '%'))" +
+            "OR LOWER(p.codeSnippet) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Post> searchPosts(String query, Sort sort);
+
 
     @Override
     List<Post> findAll();
