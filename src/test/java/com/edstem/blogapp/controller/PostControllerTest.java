@@ -1,27 +1,5 @@
 package com.edstem.blogapp.controller;
 
-import com.edstem.blogapp.contract.request.PostRequest;
-import com.edstem.blogapp.contract.response.PostResponse;
-import com.edstem.blogapp.model.post.Post;
-import com.edstem.blogapp.service.PostService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -35,18 +13,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.edstem.blogapp.contract.request.PostRequest;
+import com.edstem.blogapp.contract.response.PostResponse;
+import com.edstem.blogapp.model.post.Post;
+import com.edstem.blogapp.service.PostService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PostControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
-    @MockBean
-    private PostService postService;
+    @Autowired private MockMvc mockMvc;
+    @MockBean private PostService postService;
     private List<String> categories;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Autowired private ModelMapper modelMapper;
 
     @Test
     void testCreatePost() throws Exception {
@@ -82,12 +78,14 @@ public class PostControllerTest {
 
         when(postService.getAllPosts(pageable)).thenReturn(page);
 
-        mockMvc.perform(post("/blog/post")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(pageable)))
+        mockMvc.perform(
+                        post("/blog/post")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(new ObjectMapper().writeValueAsString(pageable)))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(page.getContent())));
+                .andExpect(
+                        content().json(new ObjectMapper().writeValueAsString(page.getContent())));
     }
 
     @Test

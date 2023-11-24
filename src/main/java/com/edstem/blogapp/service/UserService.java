@@ -11,6 +11,8 @@ import com.edstem.blogapp.model.user.Role;
 import com.edstem.blogapp.model.user.User;
 import com.edstem.blogapp.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,9 +20,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 @Slf4j
@@ -37,12 +36,13 @@ public class UserService {
             throw new EntityAlreadyExistsException(request.getEmail());
         }
         Role roleName = Role.USER;
-        User user = User.builder()
-                .name(request.getName())
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .role(Role.USER)
-                .build();
+        User user =
+                User.builder()
+                        .name(request.getName())
+                        .email(request.getEmail())
+                        .password(passwordEncoder.encode(request.getPassword()))
+                        .role(Role.USER)
+                        .build();
         user = userRepository.save(user);
         return modelMapper.map(user, SignUpResponse.class);
     }
@@ -53,11 +53,7 @@ public class UserService {
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
         String jwtToken = jwtService.generateToken(user, user.getRole().getPermissions());
         Role role = user.getRole();
-        return LoginResponse.builder()
-                .token(jwtToken)
-                .role(role)
-                .build();
-
+        return LoginResponse.builder().token(jwtToken).role(role).build();
     }
 
     @PostConstruct
@@ -68,10 +64,10 @@ public class UserService {
 
     private void createDefaultAdmin(String name, String email, String password) {
 
-        userRepository.findByEmail(email)
+        userRepository
+                .findByEmail(email)
                 .ifPresentOrElse(
-                        existingUser -> {
-                        },
+                        existingUser -> {},
                         () -> {
                             User adminUser = new User();
                             adminUser.setName(name);
@@ -79,18 +75,15 @@ public class UserService {
                             adminUser.setEmail(email);
                             adminUser.setRole(Role.ADMIN);
 
-                            List<Permission> permissions = Arrays.asList(
-                                    Permission.ADMIN_READ,
-                                    Permission.ADMIN_UPDATE,
-                                    Permission.ADMIN_CREATE,
-                                    Permission.ADMIN_DELETE
-                            );
+                            List<Permission> permissions =
+                                    Arrays.asList(
+                                            Permission.ADMIN_READ,
+                                            Permission.ADMIN_UPDATE,
+                                            Permission.ADMIN_CREATE,
+                                            Permission.ADMIN_DELETE);
                             adminUser.setPermissions(permissions);
 
                             userRepository.save(adminUser);
-                        }
-                );
+                        });
     }
-
 }
-

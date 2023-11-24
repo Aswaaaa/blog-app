@@ -1,30 +1,30 @@
-//package com.edstem.blogapp.service;
+// package com.edstem.blogapp.service;
 //
-//import com.edstem.blogapp.contract.request.PostRequest;
-//import com.edstem.blogapp.contract.response.PostResponse;
-//import com.edstem.blogapp.model.post.Post;
-//import com.edstem.blogapp.repository.PostRepository;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.mockito.Mockito;
-//import org.mockito.MockitoAnnotations;
-//import org.modelmapper.ModelMapper;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.PageImpl;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Pageable;
+// import com.edstem.blogapp.contract.request.PostRequest;
+// import com.edstem.blogapp.contract.response.PostResponse;
+// import com.edstem.blogapp.model.post.Post;
+// import com.edstem.blogapp.repository.PostRepository;
+// import org.junit.jupiter.api.BeforeEach;
+// import org.junit.jupiter.api.Test;
+// import org.mockito.Mockito;
+// import org.mockito.MockitoAnnotations;
+// import org.modelmapper.ModelMapper;
+// import org.springframework.data.domain.Page;
+// import org.springframework.data.domain.PageImpl;
+// import org.springframework.data.domain.PageRequest;
+// import org.springframework.data.domain.Pageable;
 //
-//import java.time.LocalDate;
-//import java.util.Arrays;
-//import java.util.List;
-//import java.util.Optional;
-//import java.util.stream.Collectors;
+// import java.time.LocalDate;
+// import java.util.Arrays;
+// import java.util.List;
+// import java.util.Optional;
+// import java.util.stream.Collectors;
 //
-//import static org.junit.jupiter.api.Assertions.assertEquals;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.Mockito.when;
+// import static org.junit.jupiter.api.Assertions.assertEquals;
+// import static org.mockito.ArgumentMatchers.any;
+// import static org.mockito.Mockito.when;
 //
-//public class PostServiceTest {
+// public class PostServiceTest {
 //    private PostRepository postRepository;
 //    private ModelMapper modelMapper;
 //    private PostService postService;
@@ -78,7 +78,8 @@
 //
 //        Post existingPost =
 //                new Post(
-//                        id, "Test Title", "Test Content", categories, "Test code", LocalDate.now());
+//                        id, "Test Title", "Test Content", categories, "Test code",
+// LocalDate.now());
 //        PostRequest request =
 //                new PostRequest(
 //                        "Updated Title",
@@ -88,7 +89,8 @@
 //                        LocalDate.now());
 //        Post updatedPost =
 //                new Post(
-//                        id, "Test Title", "Test Content", categories, "Test code", LocalDate.now());
+//                        id, "Test Title", "Test Content", categories, "Test code",
+// LocalDate.now());
 //        PostResponse expectedResponse = modelMapper.map(updatedPost, PostResponse.class);
 //        when(postRepository.findById(id)).thenReturn(Optional.of(existingPost));
 //        when(postRepository.save(any(Post.class))).thenReturn(updatedPost);
@@ -105,7 +107,8 @@
 //
 //        Post existingPost =
 //                new Post(
-//                        id, "Test Title", "Test Content", categories, "Test code", LocalDate.now());
+//                        id, "Test Title", "Test Content", categories, "Test code",
+// LocalDate.now());
 //
 //        when(postRepository.existsById(id)).thenReturn(true);
 //        postService.deletePostById(id);
@@ -168,4 +171,4 @@
 //
 //        assertEquals(expectedResponse, actualResponse);
 //    }
-//}
+// }

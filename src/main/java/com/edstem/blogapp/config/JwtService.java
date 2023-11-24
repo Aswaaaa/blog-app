@@ -8,20 +8,19 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import jakarta.validation.constraints.Max;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Service;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "qSn6SoG9qEBwDh9DDTP5lBidkpLt7VBnlOOPzt1pcLPlrdMfn1/cJbl7B4S8mepA";
+    private static final String SECRET_KEY =
+            "qSn6SoG9qEBwDh9DDTP5lBidkpLt7VBnlOOPzt1pcLPlrdMfn1/cJbl7B4S8mepA";
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -32,19 +31,15 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-
-
     public String generateToken(User userDetails, List<Permission> permissions) {
         Role role = userDetails.getRole();
         Map<String, Object> claims = new HashMap<>();
-        if (role!=null) {
-            claims.put("id",userDetails.getId());
-            claims.put("role",role);
-            claims.put("permissions",permissions);
-
+        if (role != null) {
+            claims.put("id", userDetails.getId());
+            claims.put("role", role);
+            claims.put("permissions", permissions);
         }
-        return Jwts
-                .builder()
+        return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
@@ -67,8 +62,7 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
+        return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token)

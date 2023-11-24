@@ -10,11 +10,12 @@ import com.edstem.blogapp.model.post.PostStatus;
 import com.edstem.blogapp.repository.PostRepository;
 import com.edstem.blogapp.service.PostService;
 import jakarta.validation.Valid;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -28,10 +29,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @RestController
 @RequestMapping("/blog/post")
 @RequiredArgsConstructor
@@ -44,18 +41,18 @@ public class PostController {
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('admin:create')")
     public PostResponse createPost(@Valid @RequestBody PostRequest request) {
-        Post post = Post.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .categories(request.getCategories())
-                .codeSnippet(request.getCodeSnippet())
-                .createdTime(LocalDateTime.now())
-                .status(PostStatus.ACTIVE)
-                .build();
+        Post post =
+                Post.builder()
+                        .title(request.getTitle())
+                        .content(request.getContent())
+                        .categories(request.getCategories())
+                        .codeSnippet(request.getCodeSnippet())
+                        .createdTime(LocalDateTime.now())
+                        .status(PostStatus.ACTIVE)
+                        .build();
         Post savedPost = postRepository.save(post);
         return modelMapper.map(savedPost, PostResponse.class);
     }
-
 
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAuthority('admin:update')")
@@ -87,7 +84,6 @@ public class PostController {
     public List<PostResponse> searchPosts(@RequestParam("query") String query) {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         return postService.searchPosts(query, sort);
-
     }
 
     @PostMapping("/list")
@@ -96,12 +92,12 @@ public class PostController {
 
         List<PostSummaryRequest> posts = postService.listPosts(request);
 
-        ListPostResponse response = ListPostResponse.builder()
-                .posts(modelMapper.map(posts, new TypeToken<List<Post>>() {}.getType()))
-                .totalPosts(postService.postsCount(request))
-                .build();
+        ListPostResponse response =
+                ListPostResponse.builder()
+                        .posts(modelMapper.map(posts, new TypeToken<List<Post>>() {}.getType()))
+                        .totalPosts(postService.postsCount(request))
+                        .build();
 
-        return ResponseEntity.ok(response);    }
-
-
+        return ResponseEntity.ok(response);
+    }
 }

@@ -9,6 +9,9 @@ import com.edstem.blogapp.model.post.Post;
 import com.edstem.blogapp.model.post.PostStatus;
 import com.edstem.blogapp.repository.PostRepository;
 import com.edstem.blogapp.repository.UserRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.Conditions;
@@ -18,10 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,18 +32,18 @@ public class PostService {
     private final ModelMapper modelMapper;
 
     public PostResponse createPost(PostRequest request) {
-        Post post = Post.builder()
-                .title(request.getTitle())
-                .content(request.getContent())
-                .categories(request.getCategories())
-                .codeSnippet(request.getCodeSnippet())
-                .createdTime(LocalDateTime.now())
-                .status(PostStatus.ACTIVE)
-                .build();
+        Post post =
+                Post.builder()
+                        .title(request.getTitle())
+                        .content(request.getContent())
+                        .categories(request.getCategories())
+                        .codeSnippet(request.getCodeSnippet())
+                        .createdTime(LocalDateTime.now())
+                        .status(PostStatus.ACTIVE)
+                        .build();
         Post savedPost = postRepository.save(post);
         return modelMapper.map(savedPost, PostResponse.class);
     }
-
 
     public PostResponse updatePostById(Long id, PostRequest request) {
         Post post =
@@ -71,10 +70,12 @@ public class PostService {
 
         List<Post> posts =
                 postRepository.findAll().stream()
-                        .filter(post -> post.getCategories().stream()
-                                .map(String::toLowerCase)
-                                .collect(Collectors.toList())
-                                .contains(lowerCaseCategory))
+                        .filter(
+                                post ->
+                                        post.getCategories().stream()
+                                                .map(String::toLowerCase)
+                                                .collect(Collectors.toList())
+                                                .contains(lowerCaseCategory))
                         .collect(Collectors.toList());
 
         if (posts.isEmpty()) {
@@ -85,7 +86,6 @@ public class PostService {
                 .map(post -> modelMapper.map(post, PostResponse.class))
                 .collect(Collectors.toList());
     }
-
 
     public PostResponse getPostById(Long id) {
         Post post =
@@ -110,13 +110,15 @@ public class PostService {
     }
 
     public List<PostSummaryRequest> listPosts(ListPostRequest request) {
-        Pageable page = PageRequest.of(request.getPageNumber(), request.getPageSize(), Sort.by("id").descending());
+        Pageable page =
+                PageRequest.of(
+                        request.getPageNumber(), request.getPageSize(), Sort.by("id").descending());
 
         log.info("Request {} for list posts is ", request);
-        List<PostSummaryRequest> posts = postRepository.findAllByStatusNot(PostStatus.INACTIVE, page)
-                .stream()
-                .map(post -> modelMapper.map(post, PostSummaryRequest.class))
-                .collect(Collectors.toList());
+        List<PostSummaryRequest> posts =
+                postRepository.findAllByStatusNot(PostStatus.INACTIVE, page).stream()
+                        .map(post -> modelMapper.map(post, PostSummaryRequest.class))
+                        .collect(Collectors.toList());
 
         log.info("Fetched {} posts", posts.size());
         return posts;
@@ -124,10 +126,9 @@ public class PostService {
 
     public Long postsCount(ListPostRequest request) {
         log.info("Request {} for list post is ", request);
-         Long postCount = postRepository.countByStatusNot(PostStatus.INACTIVE);
+        Long postCount = postRepository.countByStatusNot(PostStatus.INACTIVE);
 
         log.info("Fetched all posts - count {}", postCount);
         return postCount;
-
     }
 }
