@@ -112,7 +112,9 @@ public class PostService {
     public List<PostSummaryRequest> listPosts(ListPostRequest request) {
         Pageable page =
                 PageRequest.of(
-                        request.getPageNumber(), request.getPageSize(), Sort.by("id").descending());
+                        request.getPageNumber(),
+                        request.getPageSize(),
+                        Sort.by("updatedTime").descending());
 
         log.info("Request {} for list posts is ", request);
         List<PostSummaryRequest> posts =

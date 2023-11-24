@@ -27,7 +27,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query(
             "SELECT p.id AS id, p.title AS title, p.categories AS categories, p.createdTime AS"
-                    + " createdTime FROM Post p WHERE p.status <> ?1")
+                    + " createdTime,p.updatedTime AS updatedTime FROM Post p WHERE p.status <> ?1")
     List<PostSummaryRequest> findAllByStatusNot(PostStatus status, Pageable page);
 
     @Query("SELECT COUNT(p) FROM Post p WHERE p.status <> ?1")
