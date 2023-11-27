@@ -1,6 +1,7 @@
 package com.edstem.blogapp.model.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -19,7 +20,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,9 +27,9 @@ public class Post {
 
     private String title;
     private String content;
+    @ElementCollection
     private List<String> categories;
     private String codeSnippet;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
-    private PostStatus status;
 }

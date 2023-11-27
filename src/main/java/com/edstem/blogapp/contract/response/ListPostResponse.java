@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ListPostResponse {
-    private List<Post> posts;
+    private List<PostSummaryResponse> posts;
     private Long totalPosts;
 }

@@ -2,15 +2,13 @@ package com.edstem.blogapp.controller;
 
 import com.edstem.blogapp.contract.request.ListPostRequest;
 import com.edstem.blogapp.contract.request.PostRequest;
-import com.edstem.blogapp.contract.request.PostSummaryRequest;
 import com.edstem.blogapp.contract.response.ListPostResponse;
 import com.edstem.blogapp.contract.response.PostResponse;
+import com.edstem.blogapp.contract.response.PostSummaryResponse;
 import com.edstem.blogapp.model.post.Post;
-import com.edstem.blogapp.model.post.PostStatus;
-import com.edstem.blogapp.repository.PostRepository;
 import com.edstem.blogapp.service.PostService;
 import jakarta.validation.Valid;
-import java.time.LocalDateTime;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -36,22 +34,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
     private final PostService postService;
     private final ModelMapper modelMapper;
-    private final PostRepository postRepository;
 
     @PostMapping("/create")
     @PreAuthorize("hasAuthority('admin:create')")
     public PostResponse createPost(@Valid @RequestBody PostRequest request) {
-        Post post =
-                Post.builder()
-                        .title(request.getTitle())
-                        .content(request.getContent())
-                        .categories(request.getCategories())
-                        .codeSnippet(request.getCodeSnippet())
-                        .createdTime(LocalDateTime.now())
-                        .status(PostStatus.ACTIVE)
-                        .build();
-        Post savedPost = postRepository.save(post);
-        return modelMapper.map(savedPost, PostResponse.class);
+        return postService.createPost(request);
     }
 
     @PutMapping("/update/{id}")
@@ -90,11 +77,11 @@ public class PostController {
     @PreAuthorize("hasAuthority('admin:read') or hasAuthority('user:read')")
     public ResponseEntity<ListPostResponse> listPosts(@RequestBody ListPostRequest request) {
 
-        List<PostSummaryRequest> posts = postService.listPosts(request);
+        List<PostSummaryResponse> posts = postService.listPosts(request);
 
         ListPostResponse response =
                 ListPostResponse.builder()
-                        .posts(modelMapper.map(posts, new TypeToken<List<Post>>() {}.getType()))
+                        .posts(posts)
                         .totalPosts(postService.postsCount(request))
                         .build();
 
