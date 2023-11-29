@@ -4,15 +4,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -32,8 +31,7 @@ public class PostRequest {
     @Column(columnDefinition = "text")
     private String codeSnippet;
 
-    @FutureOrPresent
-    @CreatedDate
-//    @Column(name = "created_date", nullable = false, updatable = false)
+    @FutureOrPresent @CreatedDate
+    //    @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdTime;
 }

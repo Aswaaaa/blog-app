@@ -8,6 +8,9 @@ import com.edstem.blogapp.contract.response.PostSummaryResponse;
 import com.edstem.blogapp.exception.EntityNotFoundException;
 import com.edstem.blogapp.model.post.Post;
 import com.edstem.blogapp.repository.PostRepository;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -16,10 +19,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -108,15 +107,15 @@ public class PostService {
         List<PostSummaryResponse> posts = listPosts(request);
         Long totalPosts = countPosts();
 
-        return List.of(ListPostResponse.builder()
-                .posts(posts)
-                .totalPosts(totalPosts)
-                .build());
+        return List.of(ListPostResponse.builder().posts(posts).totalPosts(totalPosts).build());
     }
 
     private List<PostSummaryResponse> listPosts(ListPostRequest request) {
-        Pageable page = PageRequest.of(request.getPageNumber(),
-                request.getPageSize(), Sort.by(Sort.Direction.DESC, "updatedTime", "createdTime"));
+        Pageable page =
+                PageRequest.of(
+                        request.getPageNumber(),
+                        request.getPageSize(),
+                        Sort.by(Sort.Direction.DESC, "updatedTime", "createdTime"));
 
         List<PostSummaryResponse> posts =
                 postRepository.findAll(page).stream()

@@ -12,6 +12,5 @@ public enum Permission {
 
     USER_READ("user:read");
 
-    @Getter
-    private final String permission;
+    @Getter private final String permission;
 }

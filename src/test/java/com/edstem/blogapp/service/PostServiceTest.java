@@ -1,5 +1,12 @@
 package com.edstem.blogapp.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.edstem.blogapp.contract.request.ListPostRequest;
 import com.edstem.blogapp.contract.request.PostRequest;
 import com.edstem.blogapp.contract.response.ListPostResponse;
@@ -7,6 +14,11 @@ import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.contract.response.PostSummaryResponse;
 import com.edstem.blogapp.model.post.Post;
 import com.edstem.blogapp.repository.PostRepository;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -17,24 +29,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 public class PostServiceTest {
-    @Mock
-    private PostRepository postRepository;
-    @Mock
-    private ModelMapper modelMapper;
+    @Mock private PostRepository postRepository;
+    @Mock private ModelMapper modelMapper;
     private PostService postService;
 
     @BeforeEach
@@ -53,9 +50,7 @@ public class PostServiceTest {
         when(postRepository.save(any(Post.class))).thenReturn(savedPost);
         when(modelMapper.map(savedPost, PostResponse.class)).thenReturn(expectedPostResponse);
 
-
         PostResponse actualPostResponse = postService.createPost(postRequest);
-
 
         assertEquals(expectedPostResponse, actualPostResponse);
         verify(postRepository, times(1)).save(any(Post.class));
@@ -92,7 +87,6 @@ public class PostServiceTest {
                 .createdTime(savedPost.getCreatedTime())
                 .build();
     }
-
 
     @Test
     void testUpdatePostById() {
@@ -136,7 +130,6 @@ public class PostServiceTest {
                 .build();
     }
 
-
     @Test
     void testDeletePostById() {
         Long postId = 1L;
@@ -146,7 +139,6 @@ public class PostServiceTest {
 
         verify(postRepository, times(1)).existsById(postId);
         verify(postRepository, times(1)).deleteById(postId);
-
     }
 
     @Test
@@ -156,13 +148,13 @@ public class PostServiceTest {
         List<PostResponse> expectedPostResponses = createPostResponses(posts);
 
         when(postRepository.findByCategoriesContaining(category)).thenReturn(posts);
-        when(modelMapper.map(any(Post.class), eq(PostResponse.class))).thenAnswer(i -> createPostResponse((Post) i.getArguments()[0]));
+        when(modelMapper.map(any(Post.class), eq(PostResponse.class)))
+                .thenAnswer(i -> createPostResponse((Post) i.getArguments()[0]));
 
         List<PostResponse> actualPostResponses = postService.getPostsByCategory(category);
 
         assertEquals(expectedPostResponses, actualPostResponses);
         verify(postRepository, times(1)).findByCategoriesContaining(category);
-
     }
 
     private List<Post> createPosts() {
@@ -182,20 +174,21 @@ public class PostServiceTest {
                         .categories(Arrays.asList("Category1", "Category3"))
                         .codeSnippet("Code Snippet 2")
                         .createdTime(LocalDateTime.now())
-                        .build()
-        );
+                        .build());
     }
 
     private List<PostResponse> createPostResponses(List<Post> posts) {
         return posts.stream()
-                .map(post -> PostResponse.builder()
-                        .id(post.getId())
-                        .title(post.getTitle())
-                        .content(post.getContent())
-                        .categories(post.getCategories())
-                        .codeSnippet(post.getCodeSnippet())
-                        .createdTime(post.getCreatedTime())
-                        .build())
+                .map(
+                        post ->
+                                PostResponse.builder()
+                                        .id(post.getId())
+                                        .title(post.getTitle())
+                                        .content(post.getContent())
+                                        .categories(post.getCategories())
+                                        .codeSnippet(post.getCodeSnippet())
+                                        .createdTime(post.getCreatedTime())
+                                        .build())
                 .collect(Collectors.toList());
     }
 
@@ -224,7 +217,6 @@ public class PostServiceTest {
         assertEquals(expectedPostResponse, actualPostResponse);
         verify(postRepository, times(1)).findById(postId);
         verify(modelMapper, times(1)).map(post, PostResponse.class);
-
     }
 
     private Post createPost(Long id) {
@@ -246,7 +238,8 @@ public class PostServiceTest {
         List<PostResponse> expectedPostResponses = createPostResponses(posts);
 
         when(postRepository.searchPosts(query, sort)).thenReturn(posts);
-        when(modelMapper.map(any(Post.class), eq(PostResponse.class))).thenAnswer(i -> createPostResponse((Post) i.getArguments()[0]));
+        when(modelMapper.map(any(Post.class), eq(PostResponse.class)))
+                .thenAnswer(i -> createPostResponse((Post) i.getArguments()[0]));
 
         List<PostResponse> actualPostResponses = postService.searchPosts(query, sort);
 
@@ -275,10 +268,7 @@ public class PostServiceTest {
     }
 
     private ListPostRequest createListPostRequest() {
-        return ListPostRequest.builder()
-                .pageNumber(0)
-                .pageSize(10)
-                .build();
+        return ListPostRequest.builder().pageNumber(0).pageSize(10).build();
     }
 
     private List<PostSummaryResponse> createPostSummaryResponses() {
@@ -287,8 +277,7 @@ public class PostServiceTest {
                         .id(1L)
                         .title("Post 1")
                         .categories(Arrays.asList("Category1", "Category2"))
-                        .build()
-        );
+                        .build());
     }
 
     private PostSummaryResponse createPostSummaryResponse(Post post) {
@@ -300,17 +289,15 @@ public class PostServiceTest {
     }
 
     private Page<Post> createNewPosts() {
-        List<Post> posts = Arrays.asList(
-                Post.builder()
-                        .id(1L)
-                        .title("Post 1")
-                        .content("Content 1")
-                        .categories(Arrays.asList("Category1", "Category2"))
-                        .codeSnippet("Code Snippet 1")
-                        .build()
-        );
+        List<Post> posts =
+                Arrays.asList(
+                        Post.builder()
+                                .id(1L)
+                                .title("Post 1")
+                                .content("Content 1")
+                                .categories(Arrays.asList("Category1", "Category2"))
+                                .codeSnippet("Code Snippet 1")
+                                .build());
         return new PageImpl<>(posts);
     }
-
-
 }
