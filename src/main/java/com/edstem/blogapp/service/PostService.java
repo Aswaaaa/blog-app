@@ -2,6 +2,7 @@ package com.edstem.blogapp.service;
 
 import com.edstem.blogapp.contract.request.ListPostRequest;
 import com.edstem.blogapp.contract.request.PostRequest;
+import com.edstem.blogapp.contract.response.ListPostResponse;
 import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.contract.response.PostSummaryResponse;
 import com.edstem.blogapp.exception.EntityNotFoundException;
@@ -9,7 +10,6 @@ import com.edstem.blogapp.model.post.Post;
 import com.edstem.blogapp.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -48,7 +48,6 @@ public class PostService {
                         .findById(id)
                         .orElseThrow(() -> new EntityNotFoundException("Post ", id));
 
-        modelMapper.getConfiguration().setPropertyCondition(Conditions.isNotNull());
         modelMapper.map(request, post);
         post.setUpdatedTime(LocalDateTime.now());
         Post updatedPost = postRepository.save(post);
@@ -105,25 +104,29 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
-    public List<PostSummaryResponse> listPosts(ListPostRequest request) {
-        Pageable page = PageRequest.of(request.getPageNumber(),
-                request.getPageSize(), Sort.by(Sort.Direction.DESC, "updatedTime","createdTime"));
+    public List<ListPostResponse> getListPostResponse(ListPostRequest request) {
+        List<PostSummaryResponse> posts = listPosts(request);
+        Long totalPosts = countPosts();
 
-        log.info("Request {} for list posts is ", request);
+        return List.of(ListPostResponse.builder()
+                .posts(posts)
+                .totalPosts(totalPosts)
+                .build());
+    }
+
+    private List<PostSummaryResponse> listPosts(ListPostRequest request) {
+        Pageable page = PageRequest.of(request.getPageNumber(),
+                request.getPageSize(), Sort.by(Sort.Direction.DESC, "updatedTime", "createdTime"));
+
         List<PostSummaryResponse> posts =
                 postRepository.findAll(page).stream()
                         .map(post -> modelMapper.map(post, PostSummaryResponse.class))
                         .collect(Collectors.toList());
 
-        log.info("Fetched {} posts", posts.size());
         return posts;
     }
 
-    public Long postsCount(ListPostRequest request) {
-        log.info("Request {} for list post is ", request);
-        Long postCount = postRepository.count();
-
-        log.info("Fetched all posts - count {}", postCount);
-        return postCount;
+    private Long countPosts() {
+        return postRepository.count();
     }
 }

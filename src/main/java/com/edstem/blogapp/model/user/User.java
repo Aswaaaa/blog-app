@@ -39,8 +39,8 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-    @
-            ElementCollection(targetClass = Permission.class)
+
+    @ElementCollection(targetClass = Permission.class)
     @Enumerated(EnumType.STRING)
     private List<Permission> permissions;
 

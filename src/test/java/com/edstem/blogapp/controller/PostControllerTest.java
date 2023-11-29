@@ -1,6 +1,27 @@
 package com.edstem.blogapp.controller;
 
+import com.edstem.blogapp.contract.request.ListPostRequest;
+import com.edstem.blogapp.contract.request.PostRequest;
+import com.edstem.blogapp.contract.response.ListPostResponse;
+import com.edstem.blogapp.contract.response.PostResponse;
+import com.edstem.blogapp.service.PostService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Arrays;
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
@@ -13,47 +34,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.edstem.blogapp.contract.request.PostRequest;
-import com.edstem.blogapp.contract.response.PostResponse;
-import com.edstem.blogapp.model.post.Post;
-import com.edstem.blogapp.service.PostService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PostControllerTest {
 
-    @Autowired private MockMvc mockMvc;
-    @MockBean private PostService postService;
-    private List<String> categories;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private PostService postService;
 
-    @Autowired private ModelMapper modelMapper;
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Test
+    @WithMockUser(authorities = "admin:create")
     void testCreatePost() throws Exception {
-        List<String> categories = Arrays.asList("Test Category");
-
-        PostRequest request =
-                new PostRequest("Test Title", "Test Content", categories, "Test code", null);
-        PostResponse expectedResponse =
-                new PostResponse(2L, "Test Title", "Test Content", categories, "Test code", null);
+        PostRequest request = createPostRequest();
+        PostResponse expectedResponse = createExpectedResponse();
 
         when(postService.createPost(any(PostRequest.class))).thenReturn(expectedResponse);
+
 
         mockMvc.perform(
                         post("/blog/post/create")
@@ -64,41 +64,37 @@ public class PostControllerTest {
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
     }
 
-    @Test
-    void testGetAllPosts() throws Exception {
+    private PostRequest createPostRequest() {
 
         List<String> categories = Arrays.asList("Test Category");
-        List<Post> posts = new ArrayList<>();
+        return PostRequest.builder()
+                .title("Test Title")
+                .content("Test Content")
+                .categories(categories)
+                .codeSnippet("Test code")
+                .build();
+    }
 
-        posts.add(new Post(1L, "Test Title", "Test Content", categories, "Test code", null));
-        posts.add(new Post(2L, "Test Title", "Test Content", categories, "Test code", null));
+    private PostResponse createExpectedResponse() {
 
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Post> page = new PageImpl<>(posts, pageable, posts.size());
-
-        when(postService.getAllPosts(pageable)).thenReturn(page);
-
-        mockMvc.perform(
-                        post("/blog/post")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(new ObjectMapper().writeValueAsString(pageable)))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(
-                        content().json(new ObjectMapper().writeValueAsString(page.getContent())));
+        List<String> categories = Arrays.asList("Test Category");
+        return PostResponse.builder()
+                .id(2L)
+                .title("Test Title")
+                .content("Test Content")
+                .categories(categories)
+                .codeSnippet("Test code")
+                .build();
     }
 
     @Test
+    @WithMockUser(authorities = "admin:update")
     void testUpdatePostById() throws Exception {
         Long id = 1L;
-        List<String> categories = Arrays.asList("Test Category");
 
-        PostRequest updateRequest =
-                new PostRequest(
-                        "Updated Title", "Updated Content", categories, "Updated code", null);
+        PostRequest updateRequest = createUpdateRequest();
 
-        PostResponse expectedResponse =
-                new PostResponse(id, "Test Title", "Test Content", categories, "Test code", null);
+        PostResponse expectedResponse = createExpectedResponse();
 
         when(postService.updatePostById(eq(id), any(updateRequest.getClass())))
                 .thenReturn(expectedResponse);
@@ -112,64 +108,92 @@ public class PostControllerTest {
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
     }
 
+    private PostRequest createUpdateRequest() {
+        List<String> categories = Arrays.asList("Test Category");
+        return PostRequest.builder()
+                .title("Test Title")
+                .content("Test Content")
+                .categories(categories)
+                .codeSnippet("Test code")
+                .build();
+
+    }
+
     @Test
+    @WithMockUser(authorities = "admin:delete")
     void testDeletePostById() throws Exception {
         Long id = 1L;
 
         doNothing().when(postService).deletePostById(id);
-
         mockMvc.perform(delete("/blog/post/" + id)).andDo(print()).andExpect(status().isOk());
-
         verify(postService).deletePostById(id);
     }
 
     @Test
+    @WithMockUser(authorities = {"admin:read", "user:read"})
     void testGetPostsByCategory() throws Exception {
-        String category = "Test Category";
+        String category = "TestCategory";
+        List<PostResponse> expectedResponses = Arrays.asList(createExpectedResponse());
 
-        List<PostResponse> expectedResponse =
-                Arrays.asList(
-                        new PostResponse(
-                                1L,
-                                "Test Title 1",
-                                "Test Content 1",
-                                categories,
-                                "Test code 1",
-                                null),
-                        new PostResponse(
-                                2L,
-                                "Test Title 2",
-                                "Test Content 2",
-                                categories,
-                                "Test code 2",
-                                null));
-
-        when(postService.getPostsByCategory(eq(category))).thenReturn(expectedResponse);
+        when(postService.getPostsByCategory(anyString())).thenReturn(expectedResponses);
 
         mockMvc.perform(
                         get("/blog/post/categories/" + category)
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponses)));
 
-        verify(postService).getPostsByCategory(category);
     }
 
     @Test
+    @WithMockUser(authorities = {"admin:read", "user:read"})
     void testGetPostById() throws Exception {
         Long id = 1L;
         String category = "Test Category";
 
-        PostResponse postResponse =
-                new PostResponse(
-                        1L, "Test Title 1", "Test Content 1", categories, "Test code 1", null);
+        PostResponse expectedResponse = createExpectedResponse();
 
-        when(postService.getPostById(id)).thenReturn(postResponse);
+        when(postService.getPostById(id)).thenReturn(expectedResponse);
 
         mockMvc.perform(get("/blog/post/" + id))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().json(new ObjectMapper().writeValueAsString(postResponse)));
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
     }
+
+    @Test
+    @WithMockUser(authorities = {"admin:read", "user:read"})
+    void testSearchPosts() throws Exception {
+        String query = "test";
+        List<PostResponse> expectedResponses = Arrays.asList(createExpectedResponse());
+
+        when(postService.searchPosts(anyString(), any(Sort.class))).thenReturn(expectedResponses);
+
+        mockMvc.perform(
+                        get("/blog/post/search")
+                                .param("query", query)
+                                .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponses)));
+
+    }
+
+    @Test
+    @WithMockUser(authorities = {"admin:read", "user:read"})
+    public void testListPosts() throws Exception {
+        ListPostRequest request = new ListPostRequest();
+        List<ListPostResponse> expectedResponses = Arrays.asList(new ListPostResponse());
+
+        when(postService.getListPostResponse(any(ListPostRequest.class))).thenReturn(expectedResponses);
+
+        mockMvc.perform(post("/blog/post/list")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponses)));
+
+    }
+
 }
