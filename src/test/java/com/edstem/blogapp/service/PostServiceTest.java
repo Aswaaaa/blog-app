@@ -303,6 +303,7 @@ public class PostServiceTest {
                                 .build());
         return new PageImpl<>(posts);
     }
+
     @Test
     public void testEntityNotFoundExceptionWithEntityAndId() {
         String entity = "TestEntity";
@@ -317,12 +318,14 @@ public class PostServiceTest {
         EntityNotFoundException exception = new EntityNotFoundException(message);
         assertEquals(message, exception.getMessage());
     }
+
     @Test
     public void testEntityAlreadyExistsException() {
         String entity = "TestEntity";
         EntityAlreadyExistsException exception = new EntityAlreadyExistsException(entity);
         assertEquals(entity, exception.getMessage());
     }
+
     @Test
     public void testAuthenticationFailedException() {
         String message = "Test message";
