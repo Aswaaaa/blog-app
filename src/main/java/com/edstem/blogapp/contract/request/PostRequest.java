@@ -32,6 +32,5 @@ public class PostRequest {
     private String codeSnippet;
 
     @FutureOrPresent @CreatedDate
-    //    @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdTime;
 }
