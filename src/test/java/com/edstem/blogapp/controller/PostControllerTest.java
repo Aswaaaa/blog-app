@@ -23,7 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -39,8 +38,6 @@ public class PostControllerTest {
 
     @Autowired private MockMvc mockMvc;
     @MockBean private PostService postService;
-
-    @Autowired private ModelMapper modelMapper;
 
     @Test
     @WithMockUser(authorities = "admin:create")
