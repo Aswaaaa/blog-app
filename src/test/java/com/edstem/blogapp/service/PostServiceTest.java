@@ -12,6 +12,9 @@ import com.edstem.blogapp.contract.request.PostRequest;
 import com.edstem.blogapp.contract.response.ListPostResponse;
 import com.edstem.blogapp.contract.response.PostResponse;
 import com.edstem.blogapp.contract.response.PostSummaryResponse;
+import com.edstem.blogapp.exception.AuthenticationFailedException;
+import com.edstem.blogapp.exception.EntityAlreadyExistsException;
+import com.edstem.blogapp.exception.EntityNotFoundException;
 import com.edstem.blogapp.model.post.Post;
 import com.edstem.blogapp.repository.PostRepository;
 import java.time.LocalDateTime;
@@ -299,5 +302,33 @@ public class PostServiceTest {
                                 .codeSnippet("Code Snippet 1")
                                 .build());
         return new PageImpl<>(posts);
+    }
+    @Test
+    public void testEntityNotFoundExceptionWithEntityAndId() {
+        String entity = "TestEntity";
+        Long id = 1L;
+        EntityNotFoundException exception = new EntityNotFoundException(entity, id);
+        assertEquals("No Entity " + entity + " found with id " + id, exception.getMessage());
+    }
+
+    @Test
+    public void testEntityNotFoundExceptionWithMessage() {
+        String message = "Test message";
+        EntityNotFoundException exception = new EntityNotFoundException(message);
+        assertEquals(message, exception.getMessage());
+    }
+    @Test
+    public void testEntityAlreadyExistsException() {
+        String entity = "TestEntity";
+        EntityAlreadyExistsException exception = new EntityAlreadyExistsException(entity);
+        assertEquals(entity, exception.getMessage());
+    }
+    @Test
+    public void testAuthenticationFailedException() {
+        String message = "Test message";
+        Throwable cause = new RuntimeException("Test cause");
+        AuthenticationFailedException exception = new AuthenticationFailedException(message, cause);
+        assertEquals(message, exception.getMessage());
+        assertEquals(cause, exception.getCause());
     }
 }

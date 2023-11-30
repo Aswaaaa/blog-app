@@ -64,7 +64,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser(authorities = {"admin:create", "user:create"})
     public void testLogin() throws Exception {
-        // Arrange
+
         LoginRequest request =
                 LoginRequest.builder().email("admin@example.com").password("adminPassword").build();
 
@@ -78,10 +78,8 @@ public class UserControllerTest {
         when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(mockUser));
         when(jwtService.generateToken(any(User.class), any(List.class))).thenReturn("testToken");
 
-        // Mock the AuthenticationManager
         when(authenticationManager.authenticate(any(Authentication.class))).thenReturn(null);
 
-        // Act & Assert
         mockMvc.perform(
                         post("/security/login")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -89,39 +87,5 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(expectedResponse)));
     }
-
-    //    @Test
-    //    @WithMockUser(authorities = {"admin:create","user:create"})
-    //    public void testLogin() throws Exception {
-    //
-    //        LoginRequest request = new LoginRequest("test@test.com", "TestPassword");
-    // Arrange
-    //        LoginRequest request = new LoginRequest();
-    //        request.setEmail("test@test.com");
-    //        request.setPassword("TestPassword");
-    //
-    //        LoginResponse expectedResponse = LoginResponse.builder()
-    //                .token("testToken")
-    //                .build();
-    //
-    //        when(userService.authenticate(any(LoginRequest.class))).thenReturn(expectedResponse);
-    //
-    //        mockMvc.perform(post("/security/login")
-    //                        .contentType(MediaType.APPLICATION_JSON)
-    //                        .content(new ObjectMapper().writeValueAsString(request)))
-    //                .andExpect(status().isOk())
-    //                .andExpect(jsonPath("$.token", is(expectedResponse.getToken())));
-    //
-    //        verify(userService, times(1)).authenticate(any(LoginRequest.class));
-
-    //        // Act & Assert
-    //        mockMvc.perform(post("/security/login")
-    //                        .contentType(MediaType.APPLICATION_JSON)
-    //                        .content(new ObjectMapper().writeValueAsString(request)))
-    //                .andExpect(status().isOk())
-    //                .andExpect(jsonPath("$.token", is(expectedResponse.getToken())));
-    //
-    //        verify(userService, times(1)).authenticate(any(LoginRequest.class));
-    //    }
 
 }
