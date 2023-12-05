@@ -9,7 +9,10 @@ import lombok.Data;
 @Data
 @Builder
 public class SignUpRequest {
-    @NotNull private String name;
-    @Email private String email;
-    @ValidSignUpPassword private String password;
+    @NotNull
+    private String name;
+    @Email
+    private String email;
+    @ValidSignUpPassword
+    private String password;
 }

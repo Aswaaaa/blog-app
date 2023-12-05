@@ -1,16 +1,19 @@
 package com.edstem.blogapp.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
-
 import com.edstem.blogapp.config.JwtService;
 import com.edstem.blogapp.model.user.Permission;
 import com.edstem.blogapp.model.user.Role;
 import com.edstem.blogapp.model.user.User;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class JwtServiceTest {
     private final JwtService jwtService = new JwtService();

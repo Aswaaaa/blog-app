@@ -25,16 +25,19 @@ to make the app work and develop the UI.
 The frontend of the application is built using React. It includes the following features:
 
 * **Create a New Blog Post:** The application provides a form to create new blog posts. The form includes fields for the
-post's title, content, and optional categories.
+  post's title, content, and optional categories.
 
-* **List of All Blog Posts:** The main area of the application displays a list of all blog posts. Each blog post in the list
-shows the post's title, publication date, and a brief excerpt or summary.
+* **List of All Blog Posts:** The main area of the application displays a list of all blog posts. Each blog post in the
+  list
+  shows the post's title, publication date, and a brief excerpt or summary.
 
-* **View Blog Post Details:** When a blog post in the list is clicked, the application shows the full view of the blog post.
-The full view includes the post's title, content, publication date, and categories.
+* **View Blog Post Details:** When a blog post in the list is clicked, the application shows the full view of the blog
+  post.
+  The full view includes the post's title, content, publication date, and categories.
 
-* **Edit or Delete Blog Post:** The edit option allows users to update the post's title, content, and categories. The delete option allows users to remove
-the blog post from the system.
+* **Edit or Delete Blog Post:** The edit option allows users to update the post's title, content, and categories. The
+  delete option allows users to remove
+  the blog post from the system.
 
 ## Backend
 
@@ -57,6 +60,8 @@ the appropriate data.
 
 ## Code Quality
 
-Ensure front end uses Redux/RTK with proper state management and ensure front end code quality. Ensure the API meets coding standards.
+Ensure front end uses Redux/RTK with proper state management and ensure front end code quality. Ensure the API meets
+coding standards.
 
-This is a high-level overview of how the application works. For more detailed information, please refer to the source code and comments.
+This is a high-level overview of how the application works. For more detailed information, please refer to the source
+code and comments.

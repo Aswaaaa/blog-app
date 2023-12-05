@@ -11,9 +11,6 @@ import com.edstem.blogapp.model.user.Role;
 import com.edstem.blogapp.model.user.User;
 import com.edstem.blogapp.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -21,6 +18,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -71,7 +72,8 @@ public class UserService {
         userRepository
                 .findByEmail(email)
                 .ifPresentOrElse(
-                        existingUser -> {},
+                        existingUser -> {
+                        },
                         () -> {
                             User adminUser = new User();
                             adminUser.setName(name);

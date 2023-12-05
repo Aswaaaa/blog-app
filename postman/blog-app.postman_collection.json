@@ -1,82 +1,82 @@
 {
-	"info": {
-		"_postman_id": "1a86faef-d9ed-49ec-8ac0-f26eac246ac8",
-		"name": "blog-app",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "28641830",
-		"_collection_link": "https://martian-capsule-417732.postman.co/workspace/New-Team-Workspace~0df16d72-669a-4950-af5c-6491f494dbc9/collection/28641830-1a86faef-d9ed-49ec-8ac0-f26eac246ac8?action=share&source=collection_link&creator=28641830"
-	},
-	"item": [
-		{
-			"name": "Add a post to blog",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"My Fourth Post\",\r\n    \"content\": \"Nothing to see here\",\r\n    \"codeSnippet\": \"public String reverseString(String str) {\\n    if (str == null || str.isEmpty()) {\\n        return str;\\n    }\\n    return new StringBuilder(str).reverse().toString();\\n}\",\r\n    \"categories\": [\"2023\", \"Artificial\"],\r\n    \"date\": \"2024-11-03\"\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "http://localhost:8090/blog/post/create"
-			},
-			"response": []
-		},
-		{
-			"name": "Retrieve all the posts",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8090/blog/post"
-			},
-			"response": []
-		},
-		{
-			"name": "Update Post by id",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \"title\": \"Title\",\r\n        \"content\": \"New Post Content\",\r\n        \"category\": \"Illuminati\",\r\n        \"date\": \"2024-11-03\"\r\n    }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "http://localhost:8090/blog/post/update/107"
-			},
-			"response": []
-		},
-		{
-			"name": "Delete post by id",
-			"request": {
-				"method": "GET",
-				"header": []
-			},
-			"response": []
-		},
-		{
-			"name": "Get post by category",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8090/blog/post/categories/2023"
-			},
-			"response": []
-		},
-		{
-			"name": "Get post by ID",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": "http://localhost:8090/blog/post/152"
-			},
-			"response": []
-		}
-	]
+  "info": {
+    "_postman_id": "1a86faef-d9ed-49ec-8ac0-f26eac246ac8",
+    "name": "blog-app",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+    "_exporter_id": "28641830",
+    "_collection_link": "https://martian-capsule-417732.postman.co/workspace/New-Team-Workspace~0df16d72-669a-4950-af5c-6491f494dbc9/collection/28641830-1a86faef-d9ed-49ec-8ac0-f26eac246ac8?action=share&source=collection_link&creator=28641830"
+  },
+  "item": [
+    {
+      "name": "Add a post to blog",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"My Fourth Post\",\r\n    \"content\": \"Nothing to see here\",\r\n    \"codeSnippet\": \"public String reverseString(String str) {\\n    if (str == null || str.isEmpty()) {\\n        return str;\\n    }\\n    return new StringBuilder(str).reverse().toString();\\n}\",\r\n    \"categories\": [\"2023\", \"Artificial\"],\r\n    \"date\": \"2024-11-03\"\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8090/blog/post/create"
+      },
+      "response": []
+    },
+    {
+      "name": "Retrieve all the posts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8090/blog/post"
+      },
+      "response": []
+    },
+    {
+      "name": "Update Post by id",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n        \"title\": \"Title\",\r\n        \"content\": \"New Post Content\",\r\n        \"category\": \"Illuminati\",\r\n        \"date\": \"2024-11-03\"\r\n    }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "http://localhost:8090/blog/post/update/107"
+      },
+      "response": []
+    },
+    {
+      "name": "Delete post by id",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "Get post by category",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8090/blog/post/categories/2023"
+      },
+      "response": []
+    },
+    {
+      "name": "Get post by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "http://localhost:8090/blog/post/152"
+      },
+      "response": []
+    }
+  ]
 }

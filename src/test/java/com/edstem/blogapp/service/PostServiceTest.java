@@ -1,12 +1,5 @@
 package com.edstem.blogapp.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.edstem.blogapp.contract.request.ListPostRequest;
 import com.edstem.blogapp.contract.request.PostRequest;
 import com.edstem.blogapp.contract.response.ListPostResponse;
@@ -17,11 +10,6 @@ import com.edstem.blogapp.exception.EntityAlreadyExistsException;
 import com.edstem.blogapp.exception.EntityNotFoundException;
 import com.edstem.blogapp.model.post.Post;
 import com.edstem.blogapp.repository.PostRepository;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -32,9 +20,24 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class PostServiceTest {
-    @Mock private PostRepository postRepository;
-    @Mock private ModelMapper modelMapper;
+    @Mock
+    private PostRepository postRepository;
+    @Mock
+    private ModelMapper modelMapper;
     private PostService postService;
 
     @BeforeEach

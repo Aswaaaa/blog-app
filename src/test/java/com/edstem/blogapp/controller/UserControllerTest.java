@@ -1,11 +1,5 @@
 package com.edstem.blogapp.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.edstem.blogapp.config.JwtService;
 import com.edstem.blogapp.contract.request.LoginRequest;
 import com.edstem.blogapp.contract.request.SignUpRequest;
@@ -16,8 +10,6 @@ import com.edstem.blogapp.model.user.User;
 import com.edstem.blogapp.repository.UserRepository;
 import com.edstem.blogapp.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,14 +21,28 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 public class UserControllerTest {
-    @Autowired private MockMvc mockMvc;
-    @MockBean private UserService userService;
-    @MockBean private JwtService jwtService;
-    @MockBean private UserRepository userRepository;
-    @MockBean private AuthenticationManager authenticationManager;
+    @Autowired
+    private MockMvc mockMvc;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private JwtService jwtService;
+    @MockBean
+    private UserRepository userRepository;
+    @MockBean
+    private AuthenticationManager authenticationManager;
 
     @Test
     @WithMockUser(authorities = {"admin:create", "user:create"})

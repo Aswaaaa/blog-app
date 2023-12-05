@@ -1,12 +1,5 @@
 package com.edstem.blogapp.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import com.edstem.blogapp.config.JwtService;
 import com.edstem.blogapp.contract.request.LoginRequest;
 import com.edstem.blogapp.contract.request.SignUpRequest;
@@ -16,8 +9,6 @@ import com.edstem.blogapp.model.user.Permission;
 import com.edstem.blogapp.model.user.Role;
 import com.edstem.blogapp.model.user.User;
 import com.edstem.blogapp.repository.UserRepository;
-import java.util.Arrays;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -26,13 +17,28 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 public class UserServiceTest {
-    @Mock private UserRepository userRepository;
-    @Mock private ModelMapper modelMapper;
+    @Mock
+    private UserRepository userRepository;
+    @Mock
+    private ModelMapper modelMapper;
     private UserService userService;
-    @Mock private PasswordEncoder passwordEncoder;
-    @Mock private JwtService jwtService;
-    @Mock private AuthenticationManager authenticationManager;
+    @Mock
+    private PasswordEncoder passwordEncoder;
+    @Mock
+    private JwtService jwtService;
+    @Mock
+    private AuthenticationManager authenticationManager;
 
     @BeforeEach
     public void init() {
