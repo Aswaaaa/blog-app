@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/security")
 @RequiredArgsConstructor
-@CrossOrigin("*")
 public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
