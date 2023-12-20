@@ -30,4 +30,5 @@ public class Post {
     private String codeSnippet;
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
+
 }

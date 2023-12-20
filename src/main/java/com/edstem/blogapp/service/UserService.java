@@ -37,7 +37,6 @@ public class UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new EntityAlreadyExistsException(request.getEmail());
         }
-        Role roleName = Role.USER;
         List<Permission> userPermissions = new ArrayList<>();
         userPermissions.add(Permission.USER_READ);
         User user =
